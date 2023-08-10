@@ -1,0 +1,17 @@
+name: balloon_hashing
+description: Balloon Hashing implemented in Dart.
+version: 0.0.1
+homepage: https://github.com/elliotwutingfeng/balloon_hashing
+
+environment:
+  sdk: ^3.0.6
+
+# Add regular dependencies here.
+dependencies:
+  convert: ^3.1.1
+  crypto: ^3.0.3
+  # path: ^1.8.0
+
+dev_dependencies:
+  lints: ^2.1.1
+  test: ^1.24.6
