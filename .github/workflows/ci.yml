@@ -14,7 +14,7 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Test and generate coverage report
-      - run: |
+        run: |
           dart pub get
           dart format --output none --set-exit-if-changed .
           dart analyze
