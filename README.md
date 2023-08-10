@@ -1,7 +1,7 @@
 # Balloon Hashing
 
 [![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![Codecov Coverage](https://img.shields.io/codecov/c/github/elliotwutingfeng/balloon_hashing?color=bright-green&logo=codecov&style=for-the-badge&token=)](https://codecov.io/gh/elliotwutingfeng/balloon_hashing)
+[![Coveralls](https://img.shields.io/coverallsCoverage/github/elliotwutingfeng/balloon_hashing?logo=coveralls&style=for-the-badge)](https://coveralls.io/github/elliotwutingfeng/balloon_hashing?branch=main)<img src='https://coveralls.io/repos/github/elliotwutingfeng/balloon_hashing/badge.svg?branch=main' alt='' width="0" height="0" />
 
 [![GitHub license](https://img.shields.io/badge/LICENSE-BSD--3--CLAUSE-GREEN?style=for-the-badge)](LICENSE)
 

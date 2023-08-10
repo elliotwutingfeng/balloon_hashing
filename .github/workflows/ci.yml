@@ -21,8 +21,9 @@ jobs:
           dart test --coverage "coverage"
           dart run coverage:format_coverage --lcov --in coverage --out coverage.lcov --report-on lib
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        file: coverage.lcov
 
   format-markdown:
     runs-on: ubuntu-latest
