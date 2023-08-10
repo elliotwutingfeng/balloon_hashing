@@ -1,18 +1,19 @@
+import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
-import 'dart:convert';
 
 Map<String, Hash> hashFunctions = {
-  "md5": md5,
-  "sha1": sha1,
-  "sha224": sha224,
-  "sha256": sha256,
-  "sha384": sha384,
-  "sha512": sha512,
+  'md5': md5,
+  'sha1': sha1,
+  'sha224': sha224,
+  'sha256': sha256,
+  'sha384': sha384,
+  'sha512': sha512,
 };
 
-const String hashType = "sha256";
+const String hashType = 'sha256';
 
 Uint8List _int32ToBytes(int value) =>
     Uint8List(8)..buffer.asByteData().setInt32(0, value, Endian.little);
@@ -77,8 +78,8 @@ void _mix(
       buf[s] = _hashFunc([cnt, buf[s == 0 ? buf.length - 1 : s - 1], buf[s]]);
       cnt++;
       for (int i = 0; i < delta; i++) {
-        List<int> idxBlock = _hashFunc([t, s, i]);
-        int other = (_bytesToInteger(_hashFunc([cnt, salt, idxBlock])) %
+        final List<int> idxBlock = _hashFunc([t, s, i]);
+        final int other = (_bytesToInteger(_hashFunc([cnt, salt, idxBlock])) %
                 (BigInt.from(spaceCost)))
             .toInt();
         cnt++;
@@ -90,9 +91,7 @@ void _mix(
 }
 
 /// Final step. Return the last value in the buffer [buf].
-List<int> _extract(List<List<int>> buf) {
-  return buf[buf.length - 1];
-}
+List<int> _extract(List<List<int>> buf) => buf[buf.length - 1];
 
 /// Main function that collects all the substeps. As
 /// previously mentioned, first `expand`, then `mix`, and
@@ -100,16 +99,13 @@ List<int> _extract(List<List<int>> buf) {
 /// for a more friendly function with default values
 /// that returns a hex String, see the function `balloonHash`.
 List<int> balloon(String password, String salt, int spaceCost, int timeCost,
-    {int delta = 3}) {
-  // Encode salt as bytes to be passed to _balloon()
-  return _balloon(password, utf8.encode(salt), spaceCost, timeCost,
-      delta: delta);
-}
+        {int delta = 3}) =>
+    _balloon(password, utf8.encode(salt), spaceCost, timeCost, delta: delta);
 
 /// Implements steps outlined in `balloon`.
 List<int> _balloon(String password, List<int> salt, int spaceCost, int timeCost,
     {int delta = 3}) {
-  List<List<int>> buf = [
+  final List<List<int>> buf = [
     _hashFunc([0, password, salt])
   ];
   int cnt = 1;
@@ -136,14 +132,14 @@ String balloonHash(String password, String salt) {
 Future<List<int>> balloonM(
     String password, String salt, int spaceCost, int timeCost, int parallelCost,
     {int delta = 3}) async {
-  List<List<int>> results = await Future.wait<List<int>>([
+  final List<List<int>> results = await Future.wait<List<int>>([
     for (int p = 0; p < parallelCost; p++)
       Future(() async => _balloon(password,
           utf8.encode(salt) + _int32ToBytes(p + 1), spaceCost, timeCost,
           delta: delta))
   ]);
 
-  List<int> output = results.reduce((current, next) {
+  final List<int> output = results.reduce((current, next) {
     final int shorterLength =
         current.length < next.length ? current.length : next.length;
     return [for (int i = 0; i < shorterLength; i++) current[i] ^ next[i]];
