@@ -23,7 +23,6 @@ jobs:
 
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
-        file: coverage.lcov
 
   format-markdown:
     runs-on: ubuntu-latest
