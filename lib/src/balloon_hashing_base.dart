@@ -136,8 +136,6 @@ String balloonHash(String password, String salt) {
 Future<List<int>> balloonM(
     String password, String salt, int spaceCost, int timeCost, int parallelCost,
     {int delta = 3}) async {
-  List<int> output = [];
-
   List<List<int>> results = await Future.wait<List<int>>([
     for (int p = 0; p < parallelCost; p++)
       Future(() async => _balloon(password,
@@ -145,18 +143,11 @@ Future<List<int>> balloonM(
           delta: delta))
   ]);
 
-  for (List<int> result in results) {
-    if (output.isEmpty) {
-      output = result;
-    } else {
-      output = [
-        for (int i = 0;
-            i < (output.length < result.length ? output.length : result.length);
-            i++)
-          output[i] ^ result[i]
-      ];
-    }
-  }
+  List<int> output = results.reduce((current, next) {
+    final int shorterLength =
+        current.length < next.length ? current.length : next.length;
+    return [for (int i = 0; i < shorterLength; i++) current[i] ^ next[i]];
+  });
 
   return _hashFunc([password, salt, output]);
 }
