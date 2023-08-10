@@ -120,19 +120,12 @@ List<int> _balloon(String password, List<int> salt, int spaceCost, int timeCost,
   return _extract(buf);
 }
 
-/// Asynchronous wrapper for `_balloon`
-Future<List<int>> _balloonM(
-    String password, List<int> salt, int spaceCost, int timeCost,
-    {int delta = 3}) async {
-  return _balloon(password, salt, spaceCost, timeCost, delta: delta);
-}
-
 /// A more friendly client function that just takes
 /// a [password] and a [salt] and outputs the hash as a hex String.
 String balloonHash(String password, String salt) {
-  const delta = 4;
-  const timeCost = 20;
-  const spaceCost = 16;
+  const int delta = 4;
+  const int timeCost = 20;
+  const int spaceCost = 16;
 
   return hex.encode(balloon(password, salt, spaceCost, timeCost, delta: delta));
 }
@@ -147,9 +140,9 @@ Future<List<int>> balloonM(
 
   List<List<int>> results = await Future.wait<List<int>>([
     for (int p = 0; p < parallelCost; p++)
-      _balloonM(password, utf8.encode(salt) + _int32ToBytes(p + 1), spaceCost,
-          timeCost,
-          delta: delta)
+      Future(() async => _balloon(password,
+          utf8.encode(salt) + _int32ToBytes(p + 1), spaceCost, timeCost,
+          delta: delta))
   ]);
 
   for (List<int> result in results) {
@@ -172,10 +165,10 @@ Future<List<int>> balloonM(
 /// a [password] and a [salt] and outputs the hash as a hex string.
 /// This uses the M-core variant of the Balloon hashing algorithm.
 Future<String> balloonMHash(String password, String salt) async {
-  const delta = 4;
-  const timeCost = 20;
-  const spaceCost = 16;
-  const parallelCost = 4;
+  const int delta = 4;
+  const int timeCost = 20;
+  const int spaceCost = 16;
+  const int parallelCost = 4;
 
   return hex.encode(await balloonM(
       password, salt, spaceCost, timeCost, parallelCost,
