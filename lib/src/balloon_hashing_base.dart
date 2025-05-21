@@ -79,9 +79,10 @@ void _mix(
       cnt++;
       for (int i = 0; i < delta; i++) {
         final List<int> idxBlock = _hashFunc([t, s, i]);
-        final int other = (_bytesToInteger(_hashFunc([cnt, salt, idxBlock])) %
-                (BigInt.from(spaceCost)))
-            .toInt();
+        final int other =
+            (_bytesToInteger(_hashFunc([cnt, salt, idxBlock])) %
+                    (BigInt.from(spaceCost)))
+                .toInt();
         cnt++;
         buf[s] = _hashFunc([cnt, buf[s], buf[other]]);
         cnt++;
@@ -98,15 +99,24 @@ List<int> _extract(List<List<int>> buf) => buf[buf.length - 1];
 /// finally `extract`. Note the result is returned as List<int>,
 /// for a more friendly function with default values
 /// that returns a hex String, see the function `balloonHash`.
-List<int> balloon(String password, String salt, int spaceCost, int timeCost,
-        {int delta = 3}) =>
-    _balloon(password, utf8.encode(salt), spaceCost, timeCost, delta: delta);
+List<int> balloon(
+  String password,
+  String salt,
+  int spaceCost,
+  int timeCost, {
+  int delta = 3,
+}) => _balloon(password, utf8.encode(salt), spaceCost, timeCost, delta: delta);
 
 /// Implements steps outlined in `balloon`.
-List<int> _balloon(String password, List<int> salt, int spaceCost, int timeCost,
-    {int delta = 3}) {
+List<int> _balloon(
+  String password,
+  List<int> salt,
+  int spaceCost,
+  int timeCost, {
+  int delta = 3,
+}) {
   final List<List<int>> buf = [
-    _hashFunc([0, password, salt])
+    _hashFunc([0, password, salt]),
   ];
   int cnt = 1;
 
@@ -130,18 +140,30 @@ String balloonHash(String password, String salt) {
 /// is returned as List<int>, for a more friendly function with default
 /// values that returns a hex String, see the function `balloonMHash`.
 Future<List<int>> balloonM(
-    String password, String salt, int spaceCost, int timeCost, int parallelCost,
-    {int delta = 3}) async {
+  String password,
+  String salt,
+  int spaceCost,
+  int timeCost,
+  int parallelCost, {
+  int delta = 3,
+}) async {
   final List<List<int>> results = await Future.wait<List<int>>([
     for (int p = 0; p < parallelCost; p++)
-      Future(() async => _balloon(password,
-          utf8.encode(salt) + _int32ToBytes(p + 1), spaceCost, timeCost,
-          delta: delta))
+      Future(
+        () async => _balloon(
+          password,
+          utf8.encode(salt) + _int32ToBytes(p + 1),
+          spaceCost,
+          timeCost,
+          delta: delta,
+        ),
+      ),
   ]);
 
   final List<int> output = results.reduce((current, next) {
-    final int shorterLength =
-        current.length < next.length ? current.length : next.length;
+    final int shorterLength = current.length < next.length
+        ? current.length
+        : next.length;
     return [for (int i = 0; i < shorterLength; i++) current[i] ^ next[i]];
   });
 
@@ -157,9 +179,16 @@ Future<String> balloonMHash(String password, String salt) async {
   const int spaceCost = 16;
   const int parallelCost = 4;
 
-  return hex.encode(await balloonM(
-      password, salt, spaceCost, timeCost, parallelCost,
-      delta: delta));
+  return hex.encode(
+    await balloonM(
+      password,
+      salt,
+      spaceCost,
+      timeCost,
+      parallelCost,
+      delta: delta,
+    ),
+  );
 }
 
 /// Return true if the [hash] to check against matches [password]
@@ -167,10 +196,16 @@ Future<String> balloonMHash(String password, String salt) async {
 /// [spaceCost] (size of the buffer), [timeCost] (number of rounds to mix),
 /// and [delta] (number of random blocks to mix with).
 bool verify(
-    String hash, String password, String salt, int spaceCost, int timeCost,
-    {int delta = 3}) {
-  final String computedHash =
-      hex.encode(balloon(password, salt, spaceCost, timeCost, delta: delta));
+  String hash,
+  String password,
+  String salt,
+  int spaceCost,
+  int timeCost, {
+  int delta = 3,
+}) {
+  final String computedHash = hex.encode(
+    balloon(password, salt, spaceCost, timeCost, delta: delta),
+  );
   if (computedHash.length != hash.length) {
     return false;
   }
@@ -187,12 +222,25 @@ bool verify(
 /// [parallelCost] (number of concurrent instances),
 /// and [delta] (number of random blocks to mix with).
 /// This uses the M-core variant of the Balloon hashing algorithm.
-Future<bool> verifyM(String hash, String password, String salt, int spaceCost,
-    int timeCost, int parallelCost,
-    {int delta = 3}) async {
-  final String computedHash = hex.encode(await balloonM(
-      password, salt, spaceCost, timeCost, parallelCost,
-      delta: delta));
+Future<bool> verifyM(
+  String hash,
+  String password,
+  String salt,
+  int spaceCost,
+  int timeCost,
+  int parallelCost, {
+  int delta = 3,
+}) async {
+  final String computedHash = hex.encode(
+    await balloonM(
+      password,
+      salt,
+      spaceCost,
+      timeCost,
+      parallelCost,
+      delta: delta,
+    ),
+  );
   if (computedHash.length != hash.length) {
     return false;
   }

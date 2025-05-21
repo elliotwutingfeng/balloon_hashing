@@ -6,13 +6,13 @@ homepage: https://github.com/elliotwutingfeng/balloon_hashing
 publish_to: 'none'
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.8.0
 
 # Add regular dependencies here.
 dependencies:
-  convert: ^3.1.1
-  crypto: ^3.0.5
+  convert: ^3.1.2
+  crypto: ^3.0.6
 
 dev_dependencies:
-  lints: ^5.0.0
-  test: ^1.25.8
+  lints: ^6.0.0
+  test: ^1.26.2

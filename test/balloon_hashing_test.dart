@@ -56,9 +56,13 @@ void main() {
         final String output = testVector['output'] as String;
 
         expect(
-            hex.encode(balloon(password, salt, spaceCost, timeCost)), output);
-        expect(balloonHash(password, salt),
-            hex.encode(balloon(password, salt, 16, 20, delta: 4)));
+          hex.encode(balloon(password, salt, spaceCost, timeCost)),
+          output,
+        );
+        expect(
+          balloonHash(password, salt),
+          hex.encode(balloon(password, salt, 16, 20, delta: 4)),
+        );
         expect(verify(output, password, salt, spaceCost, timeCost), isTrue);
         expect(verify('0' * 64, password, salt, spaceCost, timeCost), isFalse);
       }
@@ -151,19 +155,37 @@ void main() {
         final String output = testVector['output'] as String;
 
         expect(
-            hex.encode(await balloonM(
-                password, salt, spaceCost, timeCost, parallelCost)),
-            output);
-        expect(await balloonMHash(password, salt),
-            hex.encode(await balloonM(password, salt, 16, 20, 4, delta: 4)));
+          hex.encode(
+            await balloonM(password, salt, spaceCost, timeCost, parallelCost),
+          ),
+          output,
+        );
         expect(
-            await verifyM(
-                output, password, salt, spaceCost, timeCost, parallelCost),
-            isTrue);
+          await balloonMHash(password, salt),
+          hex.encode(await balloonM(password, salt, 16, 20, 4, delta: 4)),
+        );
         expect(
-            await verifyM(
-                '0' * 64, password, salt, spaceCost, timeCost, parallelCost),
-            isFalse);
+          await verifyM(
+            output,
+            password,
+            salt,
+            spaceCost,
+            timeCost,
+            parallelCost,
+          ),
+          isTrue,
+        );
+        expect(
+          await verifyM(
+            '0' * 64,
+            password,
+            salt,
+            spaceCost,
+            timeCost,
+            parallelCost,
+          ),
+          isFalse,
+        );
       }
     });
   });

@@ -49,8 +49,9 @@ void main() {
   const int delta = 5;
   const int timeCost = 18;
   const int spaceCost = 24;
-  final String bs =
-      hex.encode(balloon(password, salt, spaceCost, timeCost, delta: delta));
+  final String bs = hex.encode(
+    balloon(password, salt, spaceCost, timeCost, delta: delta),
+  );
   print(bs);
   // OUTPUT: 69f86890cef40a7ec5f70daff1ce8e2cde233a15bffa785e7efdb5143af51bfb
 }
