@@ -15,10 +15,10 @@ Map<String, Hash> hashFunctions = {
 
 const String hashType = 'sha256';
 
-Uint8List _int32ToBytes(int value) =>
+Uint8List _int32ToBytes(final int value) =>
     Uint8List(8)..buffer.asByteData().setInt32(0, value, Endian.little);
 
-BigInt _bytesToInteger(List<int> bytes) {
+BigInt _bytesToInteger(final List<int> bytes) {
   BigInt value = BigInt.from(0);
 
   for (int i = 0; i < bytes.length; i++) {
@@ -31,7 +31,7 @@ BigInt _bytesToInteger(List<int> bytes) {
 /// Concatenate all the arguments [args] and hash the result.
 /// Note that the hash function used can be modified
 /// in the global parameter `hashType`.
-List<int> _hashFunc(List<Object> args) {
+List<int> _hashFunc(final List<Object> args) {
   List<int> t = [];
 
   for (final arg in args) {
@@ -52,7 +52,7 @@ List<int> _hashFunc(List<Object> args) {
 /// by computing repeatedly the hash function on a combination
 /// of the password and the previous hash.
 /// [cnt] is used in a security proof (read the paper).
-int _expand(List<List<int>> buf, int cnt, int spaceCost) {
+int _expand(final List<List<int>> buf, int cnt, final int spaceCost) {
   for (int s = 1; s < spaceCost; s++) {
     buf.add(_hashFunc([cnt, buf[s - 1]]));
     cnt++;
@@ -66,12 +66,12 @@ int _expand(List<List<int>> buf, int cnt, int spaceCost) {
 /// the hash of the n-1th block, the nth block, and [delta]
 /// other blocks chosen at random from the buffer [buf].
 void _mix(
-  List<List<int>> buf,
+  final List<List<int>> buf,
   int cnt,
-  int delta,
-  List<int> salt,
-  int spaceCost,
-  int timeCost,
+  final int delta,
+  final List<int> salt,
+  final int spaceCost,
+  final int timeCost,
 ) {
   for (int t = 0; t < timeCost; t++) {
     for (int s = 0; s < spaceCost; s++) {
@@ -92,7 +92,7 @@ void _mix(
 }
 
 /// Final step. Return the last value in the buffer [buf].
-List<int> _extract(List<List<int>> buf) => buf[buf.length - 1];
+List<int> _extract(final List<List<int>> buf) => buf[buf.length - 1];
 
 /// Main function that collects all the substeps. As
 /// previously mentioned, first `expand`, then `mix`, and
@@ -100,20 +100,20 @@ List<int> _extract(List<List<int>> buf) => buf[buf.length - 1];
 /// for a more friendly function with default values
 /// that returns a hex String, see the function `balloonHash`.
 List<int> balloon(
-  String password,
-  String salt,
-  int spaceCost,
-  int timeCost, {
-  int delta = 3,
+  final String password,
+  final String salt,
+  final int spaceCost,
+  final int timeCost, {
+  final int delta = 3,
 }) => _balloon(password, utf8.encode(salt), spaceCost, timeCost, delta: delta);
 
 /// Implements steps outlined in `balloon`.
 List<int> _balloon(
-  String password,
-  List<int> salt,
-  int spaceCost,
-  int timeCost, {
-  int delta = 3,
+  final String password,
+  final List<int> salt,
+  final int spaceCost,
+  final int timeCost, {
+  final int delta = 3,
 }) {
   final List<List<int>> buf = [
     _hashFunc([0, password, salt]),
@@ -128,7 +128,7 @@ List<int> _balloon(
 
 /// A more friendly client function that just takes
 /// a [password] and a [salt] and outputs the hash as a hex String.
-String balloonHash(String password, String salt) {
+String balloonHash(final String password, final String salt) {
   const int delta = 4;
   const int timeCost = 20;
   const int spaceCost = 16;
@@ -140,12 +140,12 @@ String balloonHash(String password, String salt) {
 /// is returned as List&lt;int&gt;, for a more friendly function with default
 /// values that returns a hex String, see the function `balloonMHash`.
 Future<List<int>> balloonM(
-  String password,
-  String salt,
-  int spaceCost,
-  int timeCost,
-  int parallelCost, {
-  int delta = 3,
+  final String password,
+  final String salt,
+  final int spaceCost,
+  final int timeCost,
+  final int parallelCost, {
+  final int delta = 3,
 }) async {
   final List<List<int>> results = await Future.wait<List<int>>([
     for (int p = 0; p < parallelCost; p++)
@@ -160,7 +160,7 @@ Future<List<int>> balloonM(
       ),
   ]);
 
-  final List<int> output = results.reduce((current, next) {
+  final List<int> output = results.reduce((final current, final next) {
     final int shorterLength = current.length < next.length
         ? current.length
         : next.length;
@@ -173,7 +173,7 @@ Future<List<int>> balloonM(
 /// A more friendly client function that just takes
 /// a [password] and a [salt] and outputs the hash as a hex string.
 /// This uses the M-core variant of the Balloon hashing algorithm.
-Future<String> balloonMHash(String password, String salt) async {
+Future<String> balloonMHash(final String password, final String salt) async {
   const int delta = 4;
   const int timeCost = 20;
   const int spaceCost = 16;
@@ -196,12 +196,12 @@ Future<String> balloonMHash(String password, String salt) async {
 /// [spaceCost] (size of the buffer), [timeCost] (number of rounds to mix),
 /// and [delta] (number of random blocks to mix with).
 bool verify(
-  String hash,
-  String password,
-  String salt,
-  int spaceCost,
-  int timeCost, {
-  int delta = 3,
+  final String hash,
+  final String password,
+  final String salt,
+  final int spaceCost,
+  final int timeCost, {
+  final int delta = 3,
 }) {
   final String computedHash = hex.encode(
     balloon(password, salt, spaceCost, timeCost, delta: delta),
@@ -223,13 +223,13 @@ bool verify(
 /// and [delta] (number of random blocks to mix with).
 /// This uses the M-core variant of the Balloon hashing algorithm.
 Future<bool> verifyM(
-  String hash,
-  String password,
-  String salt,
-  int spaceCost,
-  int timeCost,
-  int parallelCost, {
-  int delta = 3,
+  final String hash,
+  final String password,
+  final String salt,
+  final int spaceCost,
+  final int timeCost,
+  final int parallelCost, {
+  final int delta = 3,
 }) async {
   final String computedHash = hex.encode(
     await balloonM(
