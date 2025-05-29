@@ -96,7 +96,7 @@ List<int> _extract(List<List<int>> buf) => buf[buf.length - 1];
 
 /// Main function that collects all the substeps. As
 /// previously mentioned, first `expand`, then `mix`, and
-/// finally `extract`. Note the result is returned as List<int>,
+/// finally `extract`. Note the result is returned as List&lt;int&gt;,
 /// for a more friendly function with default values
 /// that returns a hex String, see the function `balloonHash`.
 List<int> balloon(
@@ -137,7 +137,7 @@ String balloonHash(String password, String salt) {
 }
 
 /// M-core variant of the Balloon hashing algorithm. Note the result
-/// is returned as List<int>, for a more friendly function with default
+/// is returned as List&lt;int&gt;, for a more friendly function with default
 /// values that returns a hex String, see the function `balloonMHash`.
 Future<List<int>> balloonM(
   String password,
