@@ -18,8 +18,7 @@ jobs:
           dart pub get
           dart format --output none --set-exit-if-changed .
           dart analyze
-          dart test --coverage "coverage"
-          dart run coverage:format_coverage --lcov --in coverage --out coverage.lcov --report-on lib
+          dart run coverage:test_with_coverage --function-coverage --branch-coverage
 
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
