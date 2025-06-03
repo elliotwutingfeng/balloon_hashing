@@ -13,6 +13,9 @@ jobs:
       - name: Set up Dart SDK
         uses: dart-lang/setup-dart@v1
 
+      - name: Install lcov (Ubuntu)
+        run: sudo apt-get update && sudo apt-get install -y lcov
+
       - name: Test and generate coverage report
         run: |
           make tests_with_coverage_report
