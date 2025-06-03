@@ -59,22 +59,16 @@ void main() {
 
 ## Testing
 
+Note: On macOS/Linux you need to have `lcov` installed on your system.
+
 ```bash
-# Run tests and compute test coverage
-dart test --coverage "coverage"
-
-# Generate `.lcov` report from `coverage` folder
-dart run coverage:format_coverage --lcov --in coverage --out coverage.lcov --report-on lib
-
-# Generate HTML code coverage report from `.lcov` report
-# Note: On macOS/Linux you need to have `lcov` installed on your system
-genhtml coverage.lcov -o coverage/html
+make tests_with_coverage_report
 ```
 
 ## Formatting
 
 ```bash
-dart format .
+make format
 ```
 
 ## References

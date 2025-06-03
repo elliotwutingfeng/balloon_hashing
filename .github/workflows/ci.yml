@@ -15,10 +15,7 @@ jobs:
 
       - name: Test and generate coverage report
         run: |
-          dart pub get
-          dart format --output none --set-exit-if-changed .
-          dart analyze
-          dart run coverage:test_with_coverage --function-coverage --branch-coverage
+          make tests_with_coverage_report
 
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
