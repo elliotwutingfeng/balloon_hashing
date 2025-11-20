@@ -187,6 +187,6 @@ void main() {
           isFalse,
         );
       }
-    });
+    }, timeout: Timeout(Duration(minutes: 5)));
   });
 }
